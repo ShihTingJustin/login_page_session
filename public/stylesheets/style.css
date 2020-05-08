@@ -42,7 +42,7 @@ input:focus {
   border-color: #188FFF;
 }
 
-#create-btn {
+#create-btn, #logout-btn {
   color: #188FFF;
   border: 1px solid #188FFF;
 }
