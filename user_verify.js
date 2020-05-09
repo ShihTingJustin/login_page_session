@@ -26,15 +26,12 @@ function userVerify(input) {
       password: 'password'
     }
   ]
-
-  let result = ''
   const userCheck = users.filter(u => u.email === input.email)
   if (userCheck.length > 0) {
-    result = true
+    return true
   } else {
-    result = false
+    return false
   }
-  return result
 }
 
 module.exports = userVerify

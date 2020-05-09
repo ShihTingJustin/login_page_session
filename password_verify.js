@@ -26,15 +26,13 @@ function passwordVerify(userEmail, password) {
       password: 'password'
     }
   ]
-
-  let result = ''
-  //檢查會員密碼
-  users.forEach(user => {
-    if (userEmail === user.email && password === user.password) {
-      result = true
-    }
-  })
-  return result
+  //檢查會員帳號密碼
+  const check = users.filter(u => (userEmail === u.email && password === u.password))
+  if (check.length > 0) {
+    return true
+  } else {
+    return false
+  }
 }
 
 module.exports = passwordVerify

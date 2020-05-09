@@ -10,7 +10,6 @@ const passwordVerify = require('./password_verify')
 const getUserInfo = require('./get_user_info')
 let user = ''
 let newEmail = ''
-let result = ''
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
@@ -20,17 +19,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({
   secret: 'mercedes',
   cookie: {
-    maxAge: 10 * 1000  //ms
+    maxAge: 60 * 1000  //ms
   }
 }))
-//避免直接get路由
-// const redirectLogin = (req, res, next) => {
-//   if (req.session) {
-//     res.redirect(`/${user.firstName}`)
-//   } else {
-//     next()
-//   }
-// }
 
 app.get('/', (req, res) => {
   if (req.session.name) {
@@ -51,8 +42,7 @@ app.post('/login-1', (req, res) => {
   if (userVerify(user)) {
     res.redirect(`/login-2`)
   } else {
-    result = false
-    res.render('index', { result, wrongEmail: req.body.email })
+    res.render('index', { result: false, wrongEmail: req.body.email })
   }
 })
 
@@ -72,8 +62,7 @@ app.post('/login-2', (req, res) => {
     req.session.name = `${user.firstName}`
     res.redirect(`/${user.firstName}`)
   } else {
-    result = false
-    res.render('password', { result, email: user.email })
+    res.render('password', { result: false, email: user.email })
   }
 })
 
