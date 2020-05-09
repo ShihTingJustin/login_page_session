@@ -20,6 +20,10 @@ html, body, main {
   cursor: pointer;
 }
 
+.help {
+  cursor: pointer;
+}
+
 #brand-logo:hover {
   color: #ff626f;
 }
@@ -34,7 +38,7 @@ html, body, main {
   outline: none;
   background: transparent;
   border-radius: 0;
-
+  letter-spacing: 0.5px;
 }
 
 input:focus {
@@ -45,4 +49,8 @@ input:focus {
 #create-btn, #logout-btn {
   color: #188FFF;
   border: 1px solid #188FFF;
+}
+
+.form-group > a:hover {
+  text-decoration: none;
 }

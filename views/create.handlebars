@@ -1,0 +1,24 @@
+<div class="container h-100">
+  <div class="row h-100 my-auto justify-content-center align-items-center flex-column">
+    <form method="" action="" class='bg-white text-center mt-3 p-4' id='login-card'>
+      <div class="form-group mt-2">
+        <a href="index.handlebars"><h2 id="brand-logo" class="mb-4">Feed Your Soul</h2></a>
+        <input type="text" name="first-name" class="form-control input-area" id="input-first-name"
+          placeholder="First name">
+        <input type="text" name="last-name" class="form-control input-area mt-3" id="input-last-name"
+          placeholder="Last name">
+        <input type="text" name="email" class="form-control input-area mt-3" id="input-email"
+          aria-describedby="emailHelp" placeholder="Enter email" value="{{email}}">
+        <input type="password" name="password" class="form-control input-area mt-3" id="input-password"
+          placeholder="Password">
+        <input type="password" name="password" class="form-control input-area mt-3" id="input-password"
+          placeholder="Confirm">
+        {{#if (eq result false)}}
+        <small id="emailHelp" class="form-text" style="color:#dc3543;">Invalid password. Please try again.</small>
+        {{/if}}
+      </div>
+      <button type="submit" class="btn btn-primary w-100 my-2">Next</button>
+        <small><a class="form-text text-muted help mt-1" href="index.handlebars">Sign in instead</a></small>
+    </form>
+  </div>
+</div>

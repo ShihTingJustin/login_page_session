@@ -2,48 +2,94 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const helpers = require('handlebars-helpers')()
-const userVerify = require('./user_verify')
-const passwordVerify = require('./password_verify')
-const checkUserName = require('./checkUserName')
 const app = express()
 const port = 3000
+const session = require('express-session')
+const userVerify = require('./user_verify')
+const passwordVerify = require('./password_verify')
+const getUserInfo = require('./get_user_info')
+let user = ''
+let newEmail = ''
+let result = ''
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 
 app.use(express.static('public'))
-
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(session({
+  secret: 'mercedes',
+  cookie: {
+    maxAge: 10 * 1000  //ms
+  }
+}))
+//避免直接get路由
+// const redirectLogin = (req, res, next) => {
+//   if (req.session) {
+//     res.redirect(`/${user.firstName}`)
+//   } else {
+//     next()
+//   }
+// }
 
 app.get('/', (req, res) => {
-  res.render('index')
+  if (req.session.name) {
+    res.redirect(`${user.firstName}`)
+  } else res.render('index')
 })
 
-let userName = ''
-let userEmail = ''
-let result = ''
+app.post('/create_account', (req, res) => {
+  newEmail = req.body.email
+  console.log(req.body)
+  res.render('create')
+})
 
-app.post('/', (req, res) => {
-  const input = req.body
-  if (userVerify(input.email)) {
-    userName = checkUserName(input.email)
-    userEmail = input.email
-    res.render('password', { userEmail })
+
+// 第一階段判斷用戶帳號存在
+app.post('/login-1', (req, res) => {
+  user = getUserInfo(req.body)
+  if (userVerify(user)) {
+    res.redirect(`/login-2`)
   } else {
     result = false
-    userEmail = input.email
-    res.render('index', { result, userEmail })
+    res.render('index', { result, wrongEmail: req.body.email })
   }
 })
 
-app.post('/pd', (req, res) => {
-  const input = req.body
-  if (passwordVerify(userEmail, input.password)) {
-    res.render('welcome', { userName })
+app.get('/login-2', (req, res) => {
+  if (req.session.name) {
+    res.redirect(`${user.firstName}`)
+  } else {
+    res.render('password', { email: user.email })
+  }
+})
+
+// 第二階段比對用戶帳號密碼
+app.post('/login-2', (req, res) => {
+  if (passwordVerify(user.email, req.body.password)) {
+
+    // 成功登入就在session加入name
+    req.session.name = `${user.firstName}`
+    res.redirect(`/${user.firstName}`)
   } else {
     result = false
-    res.render('password', { result, userEmail })
+    res.render('password', { result, email: user.email })
   }
+})
+
+// 進入個人頁面
+app.get('/:username', (req, res) => {
+  if (req.session.name) {
+    res.render('profile', { userName: user.firstName, email: user.email })
+  } else {
+    res.redirect('/')
+  }
+})
+
+app.post('/logout', (req, res) => {
+  // 登出要銷毀 session
+  req.session.destroy()
+  res.redirect('/')
 })
 
 app.listen(port, () => {

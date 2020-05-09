@@ -1,4 +1,4 @@
-function checkUserName(userEmail) {
+function userVerify(input) {
   const users = [
     {
       firstName: 'Tony',
@@ -27,14 +27,15 @@ function checkUserName(userEmail) {
     }
   ]
 
-  let userName = ''
-  //檢查會員密碼
-  users.forEach(user => {
-    if (userEmail === user.email) {
-      userName = user.firstName
-    }
-  })
-  return userName
+  const userInfo = users.filter(u => u.email === input.email)
+  if (userInfo.length > 0) {
+    return userInfo[0]
+  } else {
+    return false
+  }
+
 }
 
-module.exports = checkUserName
+module.exports = userVerify
+// let input = { email: 'captain@hotmail.com' }
+// userVerify(input)
